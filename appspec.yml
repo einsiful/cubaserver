@@ -1,0 +1,26 @@
+version: 0.0
+os: linux
+files:
+  - source: /dist/
+    destination: /home/ec2-user/exoserver/
+  - source: /nginx_conf/
+    destination: /etc/nginx/
+  - source: /html/
+    destination: /usr/share/nginx/html/
+  - source: /scripts/
+    destination: /home/ec2-user/scripts/
+  - source: package.json
+    destination: /home/ec2-user/exoserver/
+  - source: package-lock.json # optional but recommended
+    destination: /home/ec2-user/exoserver/
+
+hooks:
+  ApplicationStop:
+    - location: /scripts/stop_nginx.sh
+      timeout: 300
+  AfterInstall:
+    - location: /scripts/make_scripts_executable.sh
+      runas: ec2-user
+      timeout: 300
+    - location: /scripts/reload_nginx.sh
+      timeout: 300
